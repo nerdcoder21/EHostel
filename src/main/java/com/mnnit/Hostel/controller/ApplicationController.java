@@ -10,15 +10,14 @@ public class ApplicationController {
     public String loginPage(){
         return "login";
     }
-
-    @RequestMapping("/user")
+    @RequestMapping({"/","/user"})
     public String home(){
         return "home";
     }
 
-    @RequestMapping("/logout")
+    @RequestMapping("/logout-success")
     public String logout(){
-        return "login";
+        return "logout";
     }
 
 }
