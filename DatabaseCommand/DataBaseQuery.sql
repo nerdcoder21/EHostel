@@ -34,3 +34,6 @@ primary key (registrationNo),
 foreign key (hostelId) references Hostel(hostelId)
 );
 
+
+
+insert into hostel values (1, 'SVBH', 350);
