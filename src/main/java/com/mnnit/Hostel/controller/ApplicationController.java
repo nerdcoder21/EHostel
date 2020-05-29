@@ -4,9 +4,11 @@ import com.mnnit.Hostel.model.User;
 import com.mnnit.Hostel.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class ApplicationController {
@@ -35,11 +37,24 @@ public class ApplicationController {
     }
 
     @PostMapping("/signup")
-    public String addUser(User user){
+    public ModelAndView addUser(User user){
 
-        UserDetails userDetails = userDetailsService.registerUser(user);
+        ModelAndView mv = new ModelAndView();
 
-        return "home";
+
+        try{
+            userDetailsService.loadUserByUsername(user.getUsername());
+        }catch (UsernameNotFoundException ue) {
+            try {
+                UserDetails userDetails = userDetailsService.registerUser(user);
+                mv.setViewName("home");
+                return mv;
+            } catch (Exception e) { e.printStackTrace(); }
+        }
+
+        mv.setViewName("signup");
+        mv.addObject("error_message", "Registration Unsuccessful!");
+        return mv;
     }
 
 }

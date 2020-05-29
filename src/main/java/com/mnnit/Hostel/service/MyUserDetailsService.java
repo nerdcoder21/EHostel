@@ -27,11 +27,16 @@ public class MyUserDetailsService implements UserDetailsService {
         return new UserPrincipal(user);
     }
 
-    public UserDetails registerUser (User user) {
+    public UserDetails registerUser (User user) throws Exception{
 
         user.setRole("ROLE_USER");
 
-        repository.save(user);
+        try {
+            repository.save(user);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new Exception("Not Created");
+        }
         return new UserPrincipal(user);
     }
 }
