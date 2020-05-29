@@ -36,6 +36,9 @@ public class ApplicationController {
         return "signup";
     }
 
+    @RequestMapping("/student")
+    public String studentInformation() {return "studentInformation";}
+
     @PostMapping("/signup")
     public ModelAndView addUser(User user){
 
