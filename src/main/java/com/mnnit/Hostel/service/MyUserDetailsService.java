@@ -26,4 +26,12 @@ public class MyUserDetailsService implements UserDetailsService {
         }
         return new UserPrincipal(user);
     }
+
+    public UserDetails registerUser (User user) {
+
+        user.setRole("ROLE_USER");
+
+        repository.save(user);
+        return new UserPrincipal(user);
+    }
 }
