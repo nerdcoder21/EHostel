@@ -1,8 +1,12 @@
 package com.mnnit.Hostel.model;
 
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
 import java.util.Date;
 
 @Entity
@@ -14,7 +18,10 @@ public class Student {
     @Column(name = "registrationNo")
     private String registrationNumber;
     private String name;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dob;
+
     private int age;
     private String course;
     private int semester;

@@ -1,6 +1,8 @@
 package com.mnnit.Hostel.controller;
 
+import com.mnnit.Hostel.model.Student;
 import com.mnnit.Hostel.model.User;
+import com.mnnit.Hostel.service.MyStudentDetailsService;
 import com.mnnit.Hostel.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +17,9 @@ public class ApplicationController {
 
     @Autowired
     MyUserDetailsService userDetailsService;
+
+    @Autowired
+    MyStudentDetailsService studentDetailsService;
 
     @RequestMapping("/login")
     public String loginPage(){
@@ -37,7 +42,7 @@ public class ApplicationController {
     }
 
     @RequestMapping("/student")
-    public String studentInformation() {
+    public String studentInformation(Student student) {
         return "studentInformation";
     }
 
@@ -62,4 +67,17 @@ public class ApplicationController {
         return mv;
     }
 
+    @PostMapping("/student")
+    public ModelAndView addStudentInformation(Student student) {
+        ModelAndView mv = new ModelAndView();
+
+        try {
+            studentDetailsService.addStudentDetails(student);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mv.setViewName("studentInformation");
+        mv.addObject("error_message", "Registration Unsuccessful!");
+        return mv;
+    }
 }
