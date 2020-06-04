@@ -3,9 +3,7 @@ package com.mnnit.Hostel.model;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 import java.util.Date;
 
@@ -31,6 +29,9 @@ public class Student {
     private String accountNumber;
     @Column(name = "ifsc")
     private String IFSC;
+
+    @OneToOne
+    private User user;
 
     public Student() {
     }

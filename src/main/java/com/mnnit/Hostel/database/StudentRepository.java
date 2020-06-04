@@ -2,7 +2,14 @@ package com.mnnit.Hostel.database;
 
 import com.mnnit.Hostel.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, String> {
-    //Student findByRegistrationNumber(String registrationNumber);
+
+    @Query("select distinct room from Student where hostelId = ?1")
+    List<Integer> findDistinctRoomByHostelId(int hostelId);
+
 }

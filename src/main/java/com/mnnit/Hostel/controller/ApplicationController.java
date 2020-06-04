@@ -1,10 +1,10 @@
 package com.mnnit.Hostel.controller;
 
 import com.mnnit.Hostel.database.HostelRepository;
+import com.mnnit.Hostel.database.StudentRepository;
 import com.mnnit.Hostel.model.Hostel;
 import com.mnnit.Hostel.model.Student;
 import com.mnnit.Hostel.model.User;
-import com.mnnit.Hostel.service.MyStudentDetailsService;
 import com.mnnit.Hostel.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,15 +15,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Collections;
+import java.util.List;
+
 @Controller
 public class ApplicationController {
 
     @Autowired
     MyUserDetailsService userDetailsService;
 
-
     @Autowired
-    MyStudentDetailsService studentDetailsService;
+    StudentRepository studentRepository;
 
     @Autowired
     HostelRepository hostelRepository;
@@ -77,26 +79,17 @@ public class ApplicationController {
 
 
     @RequestMapping("/student")
-    public String studentInformation() {
+    public String studentInformation(Student student) {
         return "studentInformation";
     }
-
 
     @PostMapping("/student")
     public ModelAndView addStudentInformation(Student student) {
         ModelAndView mv = new ModelAndView();
-
-        try {
-            studentDetailsService.addStudentDetails(student);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mv.setViewName("studentInformation");
-        mv.addObject("error_message", "Registration Unsuccessful!");
+        studentRepository.save(student);
+        mv.setViewName("home");
         return mv;
     }
-
-
 
     /*
         admin home
@@ -116,9 +109,15 @@ public class ApplicationController {
         ModelAndView mv = new ModelAndView("hostel");
 
         Hostel hostel = hostelRepository.findByHostelId(id);
+        List<Integer> rooms = studentRepository.findDistinctRoomByHostelId(id);
+        Collections.sort(rooms);
+
+        //rooms.stream().forEach(room -> System.out.println(room));
 
         mv.addObject("hostel", hostel);
         mv.addObject("title", hostel.getHostelName());
+        mv.addObject("occupied_rooms", rooms);
+
 
         return mv;
     }
@@ -127,6 +126,5 @@ public class ApplicationController {
     public String home(){
         return "home";
     }
-
 
 }

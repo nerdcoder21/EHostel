@@ -1,17 +1,22 @@
-function passValue() {
+function addRooms(){
 
-        // var name = document.getElementById('name').value;
+    var total_rooms = document.getElementById("total_rooms").value;
+    var temp = document.getElementById("occupied_rooms").value;
+    var result = temp.substring(1, temp.length - 1);
+    result = result.split(",");
 
-        localStorage.setItem("hostelName", "SVBH");
-        alert("done");
-        // window.location.href = "hostel.html";
-}
 
-function getValue()
-{
+    for(var room = 1, i = 0; room <= total_rooms; room++){
+        var button = document.createElement("button");
+        button.innerHTML = room.toString();
 
-    var name = localStorage.getItem("hostelName");
-
-    document.getElementById('hostel_name').innerHTML = name;
-
+        if(result[i] == room){
+            button.setAttribute("class", "btn btn-primary");
+            i++
+        }
+        else{
+            button.setAttribute("class", "btn btn-success");
+        }
+        document.getElementById("list-room").appendChild(button);
+    }
 }
