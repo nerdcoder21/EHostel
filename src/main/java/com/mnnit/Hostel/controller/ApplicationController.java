@@ -2,7 +2,9 @@ package com.mnnit.Hostel.controller;
 
 import com.mnnit.Hostel.database.HostelRepository;
 import com.mnnit.Hostel.model.Hostel;
+import com.mnnit.Hostel.model.Student;
 import com.mnnit.Hostel.model.User;
+import com.mnnit.Hostel.service.MyStudentDetailsService;
 import com.mnnit.Hostel.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +20,10 @@ public class ApplicationController {
 
     @Autowired
     MyUserDetailsService userDetailsService;
+
+
+    @Autowired
+    MyStudentDetailsService studentDetailsService;
 
     @Autowired
     HostelRepository hostelRepository;
@@ -47,9 +53,7 @@ public class ApplicationController {
         return "signup";
     }
 
-    /*
-        For registering a user.
-    */
+
     @PostMapping("/signup")
     public ModelAndView addUser(User user){
 
@@ -71,15 +75,28 @@ public class ApplicationController {
         return mv;
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    /*
-        home page for student
-    */
-    @RequestMapping({"/","/user"})
-    public String home(){
-        return "home";
+    @RequestMapping("/student")
+    public String studentInformation() {
+        return "studentInformation";
     }
+
+
+    @PostMapping("/student")
+    public ModelAndView addStudentInformation(Student student) {
+        ModelAndView mv = new ModelAndView();
+
+        try {
+            studentDetailsService.addStudentDetails(student);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mv.setViewName("studentInformation");
+        mv.addObject("error_message", "Registration Unsuccessful!");
+        return mv;
+    }
+
+
 
     /*
         admin home
@@ -89,18 +106,10 @@ public class ApplicationController {
         return "adminHome";
     }
 
-    /*
-       Filling up student information
-    */
-    @RequestMapping("/student")
-    public String studentInformation() {
-        return "studentInformation";
-    }
-
 
     /*
-        Dynamic page for hostel
-    */
+       Dynamic page for hostel
+   */
     @RequestMapping("/home/{id}/hostel")
     public ModelAndView showHostel(@PathVariable int id){
 
@@ -112,6 +121,11 @@ public class ApplicationController {
         mv.addObject("title", hostel.getHostelName());
 
         return mv;
+    }
+
+    @RequestMapping({"/","/user"})
+    public String home(){
+        return "home";
     }
 
 

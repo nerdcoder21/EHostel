@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="https://www.thymeleaf.org"
+        xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 
 <head>
     <h1 style="text-align: center;">Registration form</h1>
@@ -11,14 +13,14 @@
         <div class="col-sm-3">
         </div>
         <div class="col-sm-8">
-            <form>
+            <form action="#" th:action="@{/student}" th:object="${student}" method="post">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-sm-2">
                             <label for="registrationNumberInput">Registration Number</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="registrationNumberInput" aria-describedby="emailHelp">
+                            <input type="text" th:field="*{registrationNumber}" class="form-control" id="registrationNumberInput">
 
                             <!-- <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small> -->
 
@@ -29,7 +31,7 @@
                             <label for="nameInput">Name</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="nameInput">
+                            <input type="text" th:field="*{name}" class="form-control" id="nameInput">
                         </div>
                     </div>
 
@@ -40,7 +42,7 @@
                             <label for="dobInput">D.O.B.</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="date" class="form-control" id="dobInput">
+                            <input type="date" th:field="*{dob}" class="form-control" id="dobInput">
                         </div>
                     </div>
 
@@ -51,7 +53,7 @@
                             <label for="ageInput">Age</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="number" class="form-control" id="ageInput">
+                            <input type="number" th:field="*{age}" class="form-control" id="ageInput">
                         </div>
                     </div>
 
@@ -62,7 +64,7 @@
                             <label for="courseInput">Course</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="courseInput">
+                            <input type="text" th:field="*{course}" class="form-control" id="courseInput">
                         </div>
                     </div>
 
@@ -73,7 +75,7 @@
                             <label for="semesterInput">Semester</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="number" class="form-control" id="semesterInput">
+                            <input type="number" th:field="*{semester}" class="form-control" id="semesterInput">
                         </div>
                     </div>
 
@@ -84,7 +86,7 @@
                             <label for="hostelIdInput">Hostel Id</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="number" class="form-control" id="hostelIdInput">
+                            <input type="number" th:field="*{hostelId}" class="form-control" id="hostelIdInput">
                         </div>
                     </div>
 
@@ -95,7 +97,7 @@
                             <label for="roomNumberInput">Room number</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="number" class="form-control" id="roomNumberInput">
+                            <input type="number" th:field="*{room}" class="form-control" id="roomNumberInput">
                         </div>
                     </div>
 
@@ -106,7 +108,7 @@
                             <label for="accountNumberInput">Account Number</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="accountNumberInput">
+                            <input type="text" th:field="*{accountNumber}" class="form-control" id="accountNumberInput">
                         </div>
                     </div>
 
@@ -117,7 +119,7 @@
                             <label for="ifscInput">IFSC</label>
                         </div>
                         <div class="col-sm-6">
-                            <input type="text" class="form-control" id="ifscInput">
+                            <input type="text" th:field="*{IFSC}" class="form-control" id="ifscInput">
                         </div>
                     </div>
                 </div>
