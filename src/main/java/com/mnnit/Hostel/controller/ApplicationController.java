@@ -109,13 +109,13 @@ public class ApplicationController {
         ModelAndView mv = new ModelAndView("hostel");
 
         Hostel hostel = hostelRepository.findByHostelId(id);
-        List<Integer> rooms = studentRepository.findDistinctRoomByHostelId(id);
+        List<Integer> rooms = studentRepository.findRoomByHostelId(id);
         Collections.sort(rooms);
 
         //rooms.stream().forEach(room -> System.out.println(room));
 
         mv.addObject("hostel", hostel);
-        mv.addObject("title", hostel.getHostelName());
+        mv.addObject("title", hostel.getName());
         mv.addObject("occupied_rooms", rooms);
 
 

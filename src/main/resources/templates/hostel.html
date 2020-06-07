@@ -15,7 +15,8 @@
     </head>
     <body onload="addRooms()">
         <input type="hidden" id="occupied_rooms" th:value="${occupied_rooms}">
-        <input type="hidden" id="total_rooms" th:value="${hostel.hostelRooms}">
+        <input type="hidden" id="total_rooms" th:value="${hostel.rooms}">
+        <input type="hidden" id="capacity" th:value="${hostel.capacity}">
 
         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
             <h5 class="my-0 mr-md-auto font-weight-normal">E Hostel</h5>
@@ -28,7 +29,7 @@
         </div>
 
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
-            <h1 class="display-4" th:text="${hostel.hostelName}"></h1>
+            <h1 class="display-4" th:text="${hostel.name}"></h1>
         </div>
 
         <div class="container">

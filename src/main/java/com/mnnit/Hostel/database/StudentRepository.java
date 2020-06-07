@@ -9,7 +9,6 @@ import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, String> {
 
-    @Query("select distinct room from Student where hostelId = ?1")
-    List<Integer> findDistinctRoomByHostelId(int hostelId);
-
+    @Query("select room from Student where hostelId = ?1")
+    List<Integer> findRoomByHostelId(int hostelId);
 }

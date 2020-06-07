@@ -1,14 +1,14 @@
 create table Hostel (
-hostelId int,
-hostelName varchar (30),
-hostelRooms int,
-primary key (hostelId)
+id int,
+name varchar (30),
+rooms int,
+primary key (id)
 );
 
 create table Warden(
 warden varchar (30),
-hostelId int,
-foreign key (hostelId) references Hostel(hostelId)
+id int,
+foreign key (id) references Hostel(id)
 );
 
 
@@ -26,12 +26,12 @@ name varchar (30),
 dob date,
 course varchar (30),
 semester int,
-hostelId int,
+id int,
 room int,
 accNo varchar (30),
 ifsc varchar (20),
 primary key (registrationNo),
-foreign key (hostelId) references Hostel(hostelId)
+foreign key (id) references Hostel(id)
 );
 
 
