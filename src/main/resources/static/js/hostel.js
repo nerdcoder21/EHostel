@@ -1,32 +1,37 @@
 function addRooms(){
 
     var total_rooms = document.getElementById("total_rooms").value;
-    var room_capacity = document.getElementById("capacity").value;
-
-
+    var room_capacity = document.getElementById("roomCapacity").value;
     var temp = document.getElementById("occupied_rooms").value;
     var result = temp.substring(1, temp.length - 1);
     result = result.split(",");
 
+    room_capacity = parseInt(room_capacity);
 
-    for(var room = 1, i = 0; room <= total_rooms; room++){
+    for(var room = 1, i = 0; room <= total_rooms; ){
         var button = document.createElement("button");
         button.innerHTML = room.toString();
 
-        if(result[i + room_capacity - 1] == room) {
-            button.setAttribute("class", "btn btn-primary");
+        if(i > 0 && parseInt(result[i]) == parseInt(result[i-1])) {
+            i++;
+            continue;
         }
-        else if(result[i + room_capacity - 1] != room){
-            button.setAttribute("class", "btn btn-warning");
+
+        if(parseInt(result[i]) == room) {
+            if (i + room_capacity - 1 < result.length && parseInt(result[i + room_capacity - 1]) == room) {
+                button.setAttribute("class", "btn btn-primary");
+            }
+            else {
+                button.setAttribute("class", "btn btn-warning");
+            }
+            i++;
         }
         else{
             button.setAttribute("class", "btn btn-success");
         }
 
-        while(result[i] == room){
-            i++;
-        }
-
         document.getElementById("list-room").appendChild(button);
+
+        room++;
     }
 }

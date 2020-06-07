@@ -1,5 +1,12 @@
+input.dummy{
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 4%;
+    width: 16%;
+}
+
 button{
-    margin-bottom: 2%;
+    margin-bottom: 8%;
     margin-right: 2%;
     width: 6%;
 }

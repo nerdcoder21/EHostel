@@ -9,7 +9,7 @@ public class Hostel {
     private int id;
     private String name;
     private int rooms;
-    private int capacity;
+    private int roomCapacity;
 
     public Hostel() {
     }
@@ -18,7 +18,7 @@ public class Hostel {
         this.id = id;
         this.name = name;
         this.rooms = rooms;
-        this.capacity = capacity;
+        this.roomCapacity = capacity;
     }
 
     public void setId(int id) {
@@ -33,8 +33,8 @@ public class Hostel {
         this.rooms = rooms;
     }
 
-    public void setCapacity(int capacity) {
-        this.capacity = capacity;
+    public void setRoomCapacity(int roomCapacity) {
+        this.roomCapacity = roomCapacity;
     }
 
     public int getId() {
@@ -49,8 +49,8 @@ public class Hostel {
         return rooms;
     }
 
-    public int getCapacity() {
-        return capacity;
+    public int getRoomCapacity() {
+        return roomCapacity;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class Hostel {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", rooms=" + rooms +
-                ", capacity=" + capacity +
+                ", roomCapacity=" + roomCapacity +
                 '}';
     }
 }
