@@ -142,5 +142,17 @@ public class Student {
                 ", IFSC='" + IFSC + '\'' +
                 '}';
     }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
 

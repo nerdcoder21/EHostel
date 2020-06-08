@@ -2,19 +2,23 @@ package com.mnnit.Hostel.controller;
 
 import com.mnnit.Hostel.database.HostelRepository;
 import com.mnnit.Hostel.database.StudentRepository;
+import com.mnnit.Hostel.database.UserRepository;
 import com.mnnit.Hostel.model.Hostel;
 import com.mnnit.Hostel.model.Student;
 import com.mnnit.Hostel.model.User;
 import com.mnnit.Hostel.service.MyUserDetailsService;
+//import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,6 +33,9 @@ public class ApplicationController {
 
     @Autowired
     HostelRepository hostelRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     /*
         login page for users/admin
@@ -79,15 +86,37 @@ public class ApplicationController {
 
 
     @RequestMapping("/student")
-    public String studentInformation(Student student) {
-        return "studentInformation";
+    public String studentInformation(Student student, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+        if (s == null)
+            return "studentInformation";
+        else
+            return "updateStudentInformation";
     }
 
     @PostMapping("/student")
-    public ModelAndView addStudentInformation(Student student) {
+    public ModelAndView addStudentInformation(Student student, Principal principal) {
         ModelAndView mv = new ModelAndView();
-        studentRepository.save(student);
-        mv.setViewName("home");
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+        if (s == null) {
+            student.setUser(user);
+            studentRepository.save(student);
+            mv.setViewName("home");
+        } else {
+            s.setAccountNumber(student.getAccountNumber());
+            s.setRoom(student.getRoom());
+            s.setAge(student.getAge());
+            s.setCourse(student.getCourse());
+            s.setIFSC(student.getIFSC());
+            s.setHostelId(student.getHostelId());
+            s.setDob(student.getDob());
+            s.setName(student.getName());
+
+            studentRepository.save(s);
+            mv.setViewName("home");
+        }
         return mv;
     }
 
