@@ -22,6 +22,7 @@ import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
 
+
 @Controller
 public class ApplicationController {
 
@@ -95,6 +96,18 @@ public class ApplicationController {
             return "updateStudentInformation";
     }
 
+    @RequestMapping("/hostel-information")
+    public ModelAndView hostelInformation(Principal principal) {
+        ModelAndView mv = new ModelAndView();
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+        Hostel hostel = hostelRepository.findById(s.getHostelId());
+        mv.setViewName("hostelInformation");
+        mv.addObject("hostel_name", hostel.getName());
+        mv.addObject("hostel_Id", hostel.getId());
+        return mv;
+    }
+
     @PostMapping("/student")
     public ModelAndView addStudentInformation(Student student, Principal principal) {
         ModelAndView mv = new ModelAndView();
@@ -145,10 +158,20 @@ public class ApplicationController {
         mv.addObject("title", hostel.getName());
         mv.addObject("occupied_rooms", rooms);
 
-
         return mv;
     }
 
+    @RequestMapping("/your-room")
+    public ModelAndView showRoomInformation(Principal principal) {
+        ModelAndView mv = new ModelAndView("yourRoom");
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+
+        List<Student> list = studentRepository.findAllByHostelIdAndRoom(s.getHostelId(), s.getRoom());
+        mv.addObject("roommates", list);
+        mv.addObject("me", s);
+        return mv;
+    }
     @RequestMapping({"/","/user"})
     public String home(){
         return "home";
