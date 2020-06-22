@@ -113,10 +113,17 @@ public class ApplicationController {
         ModelAndView mv = new ModelAndView();
         User user = userRepository.findByUsername(principal.getName());
         Student s = studentRepository.findStudentByUser(user);
-        if (s == null) {
-            student.setUser(user);
-            studentRepository.save(student);
-            mv.setViewName("home");
+
+        if (s == null) { //if form is not filled
+            Student check = studentRepository.findStudentByRegistrationNumber(student.getRegistrationNumber());
+            if (check != null) {
+                mv.setViewName("studentInformation");
+                mv.addObject("error_message", "Same Registration number already exists");
+            } else {
+                student.setUser(user);
+                studentRepository.save(student);
+                mv.setViewName("home");
+            }
         } else {
             s.setAccountNumber(student.getAccountNumber());
             s.setRoom(student.getRoom());
@@ -168,6 +175,7 @@ public class ApplicationController {
         Student s = studentRepository.findStudentByUser(user);
 
         List<Student> list = studentRepository.findAllByHostelIdAndRoom(s.getHostelId(), s.getRoom());
+        list.remove(s);
         mv.addObject("roommates", list);
         mv.addObject("me", s);
         return mv;

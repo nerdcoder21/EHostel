@@ -1,32 +1,60 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
     <title>Your Room</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
     <script type="text/javascript" th:src="@{/js/yourRoom.js}"></script>
+    <h1>Your room</h1>
 
-    <h1>Your roommates</h1>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-transform: uppercase;
+            font-size: 3.5rem;
+            margin-right: -3px;
+            margin-bottom: 5rem;
+            text-align: center;
+            position: relative;
+        }
+
+
+    </style>
 </head>
 
-<body onload="addRoommates()">
+<body>
 
     <input type="hidden" id="roommates" th:value="${roommates}">
     <input type="hidden" id="me" th:value="${me}">
+    <input type="hidden" id="roommates_number" th:value="${roommates.size()}">
 
-    <div class="card" style="width: 18rem;">
-        <img src="..." class="card-img-top">
-        <div class="card-body">
-            <h5 class="card-title" th:text="${me.getRegistrationNumber()}"></h5>
-            <p class="card-text"></p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+    <section>
+        <div class="card" style="width: 18rem;">
+            <img src="https://source.unsplash.com/1400x900/?nature,water" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${me.getRegistrationNumber()}"></h5>
+                <p class="card-text" th:text="${me.getName()}"></p>
+                <a href="#" class="btn btn-primary">View Information</a>
+            </div>
         </div>
-    </div>
+
+        <div class="card" style="width: 18rem;" th:each="roommate: ${roommates}">
+            <img src="https://source.unsplash.com/1400x900/?nature,water" class="card-img-top">
+            <div class="card-body">
+                <h5 class="card-title" th:text="${roommate.getRegistrationNumber()}"></h5>
+                <p class="card-text" th:text="${roommate.getName()}"></p>
+                <a href="#" class="btn btn-primary">View Information</a>
+            </div>
+        </div>
+    </section>
 </body>
 </html>

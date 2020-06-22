@@ -14,6 +14,7 @@ public interface StudentRepository extends JpaRepository<Student, String> {
     List<Integer> findRoomByHostelId(int hostelId);
 
     Student findStudentByUser(User user);
+    Student findStudentByRegistrationNumber(String regnNo);
 
     List<Student> findAllByHostelIdAndRoom(int hostelId, int room);
 
