@@ -2,6 +2,7 @@ function addRooms(){
 
     var total_rooms = document.getElementById("total_rooms").value;
     var room_capacity = document.getElementById("roomCapacity").value;
+    var hostelId = document.getElementById("hostelId").value;
     var temp = document.getElementById("occupied_rooms").value;
     var result = temp.substring(1, temp.length - 1);
     result = result.split(",");
@@ -11,7 +12,10 @@ function addRooms(){
     for(var room = 1, i = 0; room <= total_rooms; ){
         var button = document.createElement("button");
         button.innerHTML = room.toString();
-        button.onclick = roomDetails();
+
+        var redirect = "window.location.href = '/home/" + hostelId + "/hostel/" + room.toString() + "/room'";
+
+        button.setAttribute("onclick", redirect);
 
         if(i > 0 && parseInt(result[i]) == parseInt(result[i-1])) {
             i++;
@@ -38,5 +42,5 @@ function addRooms(){
 }
 
 function roomDetails(){
-
+    window.location.href = '/home/1/hostel/';
 }

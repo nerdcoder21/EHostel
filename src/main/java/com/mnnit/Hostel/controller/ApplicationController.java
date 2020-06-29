@@ -12,11 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.util.Collections;
@@ -168,9 +168,51 @@ public class ApplicationController {
         return mv;
     }
 
-    @RequestMapping("/your-room")
+    /*
+       Room details for admin
+   */
+    @RequestMapping({"/home/{hostelId}/hostel/{roomId}/room"})
+    public ModelAndView roomDetails(@PathVariable int hostelId, @PathVariable int roomId){
+
+        ModelAndView mv = new ModelAndView("roomDetails");
+
+        Hostel hostel = hostelRepository.findById(hostelId);
+        List<Student> roomMates = studentRepository.findAllByHostelIdAndRoom(hostelId, roomId);
+        mv.addObject("hostel", hostel);
+        mv.addObject("title", "Room Details");
+        mv.addObject("roomNo", roomId);
+        mv.addObject("roommates", roomMates);
+
+        return mv;
+    }
+
+    /*
+        adding new student to room
+        changing database.
+   */
+    @RequestMapping({"/home/{hostelId}/hostel/{roomId}/room/{reg}"})
+    public RedirectView addStudentToRoom(@PathVariable int hostelId, @PathVariable int roomId, @PathVariable("reg") String registrationNumber){
+
+        try {
+            Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
+
+            student.setHostelId(hostelId);
+            student.setRoom(roomId);
+            studentRepository.save(student);
+        }catch (Exception e){
+            System.out.println("Student Not found");
+        }
+
+        return new RedirectView("/home/{hostelId}/hostel/{roomId}/room");
+    }
+
+
+    // ************************************************************************************************************************
+    // ****** I modified this by mistake use roomDetails.html file to add student to rooms just hide some details etc. ********
+
+/*  @RequestMapping("/your-room")
     public ModelAndView showRoomInformation(Principal principal) {
-        ModelAndView mv = new ModelAndView("yourRoom");
+        ModelAndView mv = new ModelAndView("roomDetails");
         User user = userRepository.findByUsername(principal.getName());
         Student s = studentRepository.findStudentByUser(user);
 
@@ -179,9 +221,11 @@ public class ApplicationController {
         mv.addObject("roommates", list);
         mv.addObject("me", s);
         return mv;
-    }
+    }*/
+
     @RequestMapping({"/","/user"})
     public String home(){
         return "home";
     }
+
 }
