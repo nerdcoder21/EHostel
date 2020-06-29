@@ -124,5 +124,4 @@ public class ApplicationController {
     public String home(){
         return "home";
     }
-
 }

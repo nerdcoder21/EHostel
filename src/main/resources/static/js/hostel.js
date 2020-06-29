@@ -11,6 +11,7 @@ function addRooms(){
     for(var room = 1, i = 0; room <= total_rooms; ){
         var button = document.createElement("button");
         button.innerHTML = room.toString();
+        button.onclick = roomDetails();
 
         if(i > 0 && parseInt(result[i]) == parseInt(result[i-1])) {
             i++;
@@ -34,4 +35,8 @@ function addRooms(){
 
         room++;
     }
+}
+
+function roomDetails(){
+
 }
