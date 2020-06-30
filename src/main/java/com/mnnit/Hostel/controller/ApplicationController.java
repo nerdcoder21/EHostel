@@ -1,14 +1,11 @@
 package com.mnnit.Hostel.controller;
 
-import com.mnnit.Hostel.database.HostelRepository;
-import com.mnnit.Hostel.database.StudentRepository;
-import com.mnnit.Hostel.database.UserRepository;
-import com.mnnit.Hostel.model.Hostel;
-import com.mnnit.Hostel.model.Student;
-import com.mnnit.Hostel.model.User;
+import com.mnnit.Hostel.database.*;
+import com.mnnit.Hostel.model.*;
 import com.mnnit.Hostel.service.MyUserDetailsService;
 //import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -20,6 +17,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 
@@ -37,6 +35,12 @@ public class ApplicationController {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    RequestRepository requestRepository;
+
+    @Autowired
+    MessRepository messRepository;
 
     /*
         login page for users/admin
@@ -86,7 +90,7 @@ public class ApplicationController {
     }
 
 
-    @RequestMapping("/student")
+    @RequestMapping("/user/student")
     public String studentInformation(Student student, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
         Student s = studentRepository.findStudentByUser(user);
@@ -96,7 +100,7 @@ public class ApplicationController {
             return "updateStudentInformation";
     }
 
-    @RequestMapping("/hostel-information")
+    @RequestMapping("/user/hostel-information")
     public ModelAndView hostelInformation(Principal principal) {
         ModelAndView mv = new ModelAndView();
         User user = userRepository.findByUsername(principal.getName());
@@ -108,7 +112,7 @@ public class ApplicationController {
         return mv;
     }
 
-    @PostMapping("/student")
+    @PostMapping("/user/student")
     public ModelAndView addStudentInformation(Student student, Principal principal) {
         ModelAndView mv = new ModelAndView();
         User user = userRepository.findByUsername(principal.getName());
@@ -143,7 +147,7 @@ public class ApplicationController {
     /*
         admin home
     */
-    @RequestMapping({"home"})
+    @RequestMapping({"/admin/home"})
     public String adminHome(){
         return "adminHome";
     }
@@ -152,7 +156,7 @@ public class ApplicationController {
     /*
        Dynamic page for hostel
    */
-    @RequestMapping("/home/{id}/hostel")
+    @RequestMapping("/admin/home/{id}/hostel")
     public ModelAndView showHostel(@PathVariable int id){
 
         ModelAndView mv = new ModelAndView("hostel");
@@ -171,7 +175,7 @@ public class ApplicationController {
     /*
        Room details for admin
    */
-    @RequestMapping({"/home/{hostelId}/hostel/{roomId}/room"})
+    @RequestMapping({"/admin/home/{hostelId}/hostel/{roomId}/room"})
     public ModelAndView roomDetails(@PathVariable int hostelId, @PathVariable int roomId){
 
         ModelAndView mv = new ModelAndView("roomDetails");
@@ -190,7 +194,7 @@ public class ApplicationController {
         adding new student to room
         changing database.
    */
-    @RequestMapping({"/home/{hostelId}/hostel/{roomId}/room/{reg}"})
+    @RequestMapping({"/admin/home/{hostelId}/hostel/{roomId}/room/{reg}"})
     public RedirectView addStudentToRoom(@PathVariable int hostelId, @PathVariable int roomId, @PathVariable("reg") String registrationNumber){
 
         try {
@@ -203,8 +207,85 @@ public class ApplicationController {
             System.out.println("Student Not found");
         }
 
-        return new RedirectView("/home/{hostelId}/hostel/{roomId}/room");
+        return new RedirectView("/admin/home/{hostelId}/hostel/{roomId}/room");
     }
+
+    /*
+        For Handling notifications
+    */
+    @RequestMapping("/admin/notification")
+    public ModelAndView notification(){
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("notification");
+
+        List<Request> requests = requestRepository.findAllByStatus(1);
+
+        mv.addObject("requests", requests);
+
+        return mv;
+    }
+
+
+    /*
+    * Below functions are for handling different requests by admin
+    * */
+    @RequestMapping("/admin/notification/{reg}/mess")
+    public RedirectView mess(@PathVariable("reg") String registrationNumber){
+
+        Request request = requestRepository.getOne(registrationNumber);
+
+        int days = (int)((request.getDateTo().getTime() - request.getDateFrom().getTime())/(1000*3600*24));
+        Mess messAccount;
+        try{
+            messAccount = messRepository.findByRegistrationNumber(registrationNumber);
+            messAccount.setHoliday(messAccount.getHoliday() + days);
+        }catch (Exception e){
+            messAccount = new Mess(registrationNumber, days, 0, 1);
+        }
+        messRepository.save(messAccount);
+
+        request.setStatus(0);
+        requestRepository.save(request);
+        return new RedirectView("/admin/notification");
+    }
+
+    @RequestMapping("/admin/notification/{reg}/leave")
+    public RedirectView hostelLeave(@PathVariable("reg") String registrationNumber){
+
+        Request request = requestRepository.getOne(registrationNumber);
+        Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
+
+        student.setHostelId(0);
+        student.setRoom(0);
+        studentRepository.save(student);
+
+        request.setStatus(0);
+        requestRepository.save(request);
+
+        return new RedirectView("/admin/notification");
+    }
+
+    @RequestMapping("/admin/notification/{reg}/room/{roomNo}")
+    public RedirectView mess(@PathVariable("reg") String registrationNumber, @PathVariable int roomNo){
+
+        Request request = requestRepository.getOne(registrationNumber);
+
+        if(roomNo != -1) {
+            Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
+
+            student.setRoom(roomNo);
+            studentRepository.save(student);
+        }
+        request.setStatus(0);
+        requestRepository.save(request);
+
+        return new RedirectView("/admin/notification");
+    }
+
+
+
+
 
 
     // ************************************************************************************************************************

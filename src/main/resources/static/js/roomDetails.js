@@ -8,5 +8,5 @@ function addStudent() {
     var hostelId = document.getElementById("hostelId").value;
     var room = document.getElementById("room").value;
 
-    window.location.href = "/home/" + hostelId + "/hostel/" + room + "/room/" + regNo;
+    window.location.href = "/admin/home/" + hostelId + "/hostel/" + room + "/room/" + regNo;
 }

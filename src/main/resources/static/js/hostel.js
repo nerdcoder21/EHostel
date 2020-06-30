@@ -13,7 +13,7 @@ function addRooms(){
         var button = document.createElement("button");
         button.innerHTML = room.toString();
 
-        var redirect = "window.location.href = '/home/" + hostelId + "/hostel/" + room.toString() + "/room'";
+        var redirect = "window.location.href = '/admin/home/" + hostelId + "/hostel/" + room.toString() + "/room'";
 
         button.setAttribute("onclick", redirect);
 
