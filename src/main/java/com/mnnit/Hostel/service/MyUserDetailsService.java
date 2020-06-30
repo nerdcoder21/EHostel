@@ -29,7 +29,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public UserDetails registerUser (User user) throws Exception{
 
-        user.setRole("ROLE_USER");
+        user.setRole("USER");
 
         try {
             repository.save(user);
