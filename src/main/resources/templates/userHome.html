@@ -1,0 +1,55 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+    <title th:text="${title}"></title>
+    <style>
+        .my-box{
+            padding: 0;
+            margin: 12px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div th:replace="fragments/components :: studentMenu"></div>
+
+    <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+        <h1 class="display-4" th:text="${hostel.name}"></h1>
+        <p class="lead" th:text="'Room No : ' + ${currentUser.room}"></p>
+    </div>
+
+    <div class="container">
+        <div class="row text-center justify-content-center">
+            <div class="card box-shadow col-lg-3 col-md-5 col-sm-12 my-box" th:each="student: ${roommates}">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal" th:text="${student.name}"></h4>
+                    <h4 class="my-0 font-weight-normal" th:text="${student.registrationNumber}"></h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead" th:text="'Course : ' + ${student.course}"></p>
+                    <p class="lead" th:text="'Semester : ' + ${student.semester}"></p>
+                </div>
+            </div>
+
+            <div class="card box-shadow col-lg-3 col-md-5 col-sm-12 my-box">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal" th:text="${currentUser.name}"></h4>
+                    <h4 class="my-0 font-weight-normal" th:text="${currentUser.registrationNumber}"></h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead" th:text="'Course : ' + ${currentUser.course}"></p>
+                    <p class="lead" th:text="'Semester : ' + ${currentUser.semester}"></p>
+                    <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href='/user/student'">Edit Profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
