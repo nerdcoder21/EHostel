@@ -3,9 +3,10 @@ package com.mnnit.Hostel.controller;
 import com.mnnit.Hostel.database.*;
 import com.mnnit.Hostel.model.*;
 import com.mnnit.Hostel.service.MyUserDetailsService;
-//import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.security.Principal;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 
@@ -47,6 +47,10 @@ public class ApplicationController {
     */
     @RequestMapping("/login")
     public String loginPage(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/user/";
+        }
         return "login";
     }
 
@@ -64,6 +68,11 @@ public class ApplicationController {
     */
     @RequestMapping("/signup")
     public String signUp(User user){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            return "redirect:/user/";
+        }
+
         return "signup";
     }
 
@@ -312,8 +321,15 @@ public class ApplicationController {
     }*/
 
     @RequestMapping({"/","/user"})
-    public String home(){
-        return "home";
+    public RedirectView home(Principal principal){
+        User user = userRepository.findByUsername(principal.getName());
+
+        if(user.getRole().compareTo("USER") == 0){
+            return new RedirectView("/user/home");
+        }
+        else{
+            return new RedirectView("/admin/home");
+        }
     }
 
 }
