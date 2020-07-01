@@ -10,6 +10,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,6 +42,20 @@ public class ApplicationController {
 
     @Autowired
     MessRepository messRepository;
+
+
+    @RequestMapping({"/","/user"})
+    public RedirectView home(Principal principal){
+        User user = userRepository.findByUsername(principal.getName());
+
+        if(user.getRole().compareTo("USER") == 0){
+            return new RedirectView("/user/home");
+        }
+        else{
+            return new RedirectView("/admin/home");
+        }
+    }
+
 
     /*
         login page for users/admin
@@ -78,30 +93,27 @@ public class ApplicationController {
 
 
     @PostMapping("/signup")
-    public ModelAndView addUser(User user){
-
-        ModelAndView mv = new ModelAndView();
-
+    public String addUser(User user, ModelMap modelMap){
 
         try{
             userDetailsService.loadUserByUsername(user.getUsername());
         }catch (UsernameNotFoundException ue) {
             try {
                 UserDetails userDetails = userDetailsService.registerUser(user);
-                mv.setViewName("home");
-                return mv;
+                return "redirect:/user/student";
             } catch (Exception e) { e.printStackTrace(); }
         }
 
-        mv.setViewName("signup");
-        mv.addObject("error_message", "Registration Unsuccessful!");
-        return mv;
+        modelMap.addAttribute("error_message", "Registration Unsuccessful!");
+        return "signup";
     }
+
 
 
     @RequestMapping("/user/student")
     public String studentInformation(Student student, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
+
         Student s = studentRepository.findStudentByUser(user);
         if (s == null)
             return "studentInformation";
@@ -109,6 +121,7 @@ public class ApplicationController {
             return "updateStudentInformation";
     }
 
+/*
     @RequestMapping("/user/hostel-information")
     public ModelAndView hostelInformation(Principal principal) {
         ModelAndView mv = new ModelAndView();
@@ -120,22 +133,24 @@ public class ApplicationController {
         mv.addObject("hostel_Id", hostel.getId());
         return mv;
     }
+*/
+
+
 
     @PostMapping("/user/student")
-    public ModelAndView addStudentInformation(Student student, Principal principal) {
-        ModelAndView mv = new ModelAndView();
+    public String addStudentInformation(Student student, Principal principal, ModelMap modelMap) {
         User user = userRepository.findByUsername(principal.getName());
         Student s = studentRepository.findStudentByUser(user);
 
         if (s == null) { //if form is not filled
             Student check = studentRepository.findStudentByRegistrationNumber(student.getRegistrationNumber());
             if (check != null) {
-                mv.setViewName("studentInformation");
-                mv.addObject("error_message", "Same Registration number already exists");
+                modelMap.addAttribute("error_message", "Same Registration number already exists");
+                return "redirect:/user/student";
             } else {
                 student.setUser(user);
                 studentRepository.save(student);
-                mv.setViewName("home");
+                return "redirect:/user/home";
             }
         } else {
             s.setAccountNumber(student.getAccountNumber());
@@ -148,10 +163,49 @@ public class ApplicationController {
             s.setName(student.getName());
 
             studentRepository.save(s);
-            mv.setViewName("home");
+            return "redirect:/user/home";
         }
+    }
+
+
+    /*
+        Home for student
+    */
+    @RequestMapping("/user/home")
+    public ModelAndView showRoomInformation(Principal principal) {
+        ModelAndView mv = new ModelAndView("userHome");
+
+        User user = userRepository.findByUsername(principal.getName());
+
+        Student student = studentRepository.findStudentByUser(user);
+        if(student == null) {
+            mv.setViewName("studentInformation");
+            return mv;
+        }
+
+        Hostel hostel = hostelRepository.findById(student.getHostelId());
+
+        List<Student> list = studentRepository.findAllByHostelIdAndRoom(student.getHostelId(), student.getRoom());
+        list.remove(student);
+
+        mv.addObject("roommates", list);
+        mv.addObject("currentUser", student);
+        mv.addObject("hostel", hostel);
         return mv;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /*
         admin home
@@ -167,7 +221,6 @@ public class ApplicationController {
 
         return mv;
     }
-
 
     /*
        Dynamic page for hostel
@@ -300,36 +353,5 @@ public class ApplicationController {
     }
 
 
-
-
-
-
-    // ************************************************************************************************************************
-    // ****** I modified this by mistake use roomDetails.html file to add student to rooms just hide some details etc. ********
-
-/*  @RequestMapping("/your-room")
-    public ModelAndView showRoomInformation(Principal principal) {
-        ModelAndView mv = new ModelAndView("roomDetails");
-        User user = userRepository.findByUsername(principal.getName());
-        Student s = studentRepository.findStudentByUser(user);
-
-        List<Student> list = studentRepository.findAllByHostelIdAndRoom(s.getHostelId(), s.getRoom());
-        list.remove(s);
-        mv.addObject("roommates", list);
-        mv.addObject("me", s);
-        return mv;
-    }*/
-
-    @RequestMapping({"/","/user"})
-    public RedirectView home(Principal principal){
-        User user = userRepository.findByUsername(principal.getName());
-
-        if(user.getRole().compareTo("USER") == 0){
-            return new RedirectView("/user/home");
-        }
-        else{
-            return new RedirectView("/admin/home");
-        }
-    }
 
 }
