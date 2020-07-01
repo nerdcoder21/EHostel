@@ -148,8 +148,15 @@ public class ApplicationController {
         admin home
     */
     @RequestMapping({"/admin/home"})
-    public String adminHome(){
-        return "adminHome";
+    public ModelAndView adminHome(){
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("adminHome");
+
+        List<Hostel> hostels = hostelRepository.findAll();
+        mv.addObject("hostels", hostels);
+
+        return mv;
     }
 
 

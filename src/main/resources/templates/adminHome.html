@@ -7,18 +7,16 @@
         <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
         <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
         <title>E Hostel</title>
+
+        <style>
+            .my-box{
+                padding: 0;
+                margin: 12px;
+            }
+        </style>
     </head>
     <body>
-
-        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-            <h5 class="my-0 mr-md-auto font-weight-normal">E Hostel</h5>
-            <nav class="my-2 my-md-0 mr-md-3">
-                <a class="p-2 text-dark" href="#">Home</a>
-                <a class="p-2 text-dark" href="#">Notice</a>
-                <a class="p-2 text-dark" href="/admin/notification">Notifications</a>
-            </nav>
-            <a class="btn btn-outline-primary" href="/logout">Logout</a>
-        </div>
+        <div th:replace="fragments/components :: menu"></div>
 
         <div class="px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
             <h1 class="display-4">Hostels</h1>
@@ -26,62 +24,19 @@
         </div>
 
         <div class="container">
-            <div class="row">
-                <div class="col card-deck mb-3 text-center">
-                    <div class="card box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">SVBH</h4>
-                        </div>
-                        <div class="card-body">
-                                <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href = '/admin/home/1/hostel'">GO</button>
-                        </div>
+            <div class="row text-center justify-content-center">
+
+                <div class="card box-shadow col-lg-3 col-md-5 col-sm-12 my-box" th:each="hostel:${hostels}">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal" th:text="${hostel.name}"></h4>
                     </div>
-                    <div class="card box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">PG</h4>
-                        </div>
-                        <div class="card-body">
-                            <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href = '/admin/home/2/hostel'">GO</button>
-                        </div>
-                    </div>
-                    <div class="card box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">Tilak</h4>
-                        </div>
-                        <div class="card-body">
-                            <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href = '/admin/home/3/hostel'">GO</button>
-                        </div>
+                    <div class="card-body">
+                        <button class="btn btn-lg btn-block btn-outline-primary" th:attr="onclick=|window.location.href = '/admin/home/${hostel.id}/hostel'|">GO</button>
                     </div>
                 </div>
+
             </div>
-            <div class="row">
-                <div class="col card-deck mb-3 text-center">
-                    <div class="card box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">Raman</h4>
-                        </div>
-                        <div class="card-body">
-                            <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href = '/admin/home/4/hostel'">GO</button>
-                        </div>
-                    </div>
-                    <div class="card box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">Tandon</h4>
-                        </div>
-                        <div class="card-body">
-                            <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href = '/admin/home/5/hostel'">GO</button>
-                        </div>
-                    </div>
-                    <div class="card box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">Malviya</h4>
-                        </div>
-                        <div class="card-body">
-                            <button class="btn btn-lg btn-block btn-outline-primary" onclick="window.location.href = '/admin/home/6/hostel'">GO</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </body>
 </html>
