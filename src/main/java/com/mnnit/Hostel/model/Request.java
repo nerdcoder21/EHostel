@@ -1,5 +1,7 @@
 package com.mnnit.Hostel.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,7 +17,9 @@ public class Request {
     private int status;
 
     /*request made for mess account.*/
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateFrom;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date dateTo;
 
     /*request made for room change*/

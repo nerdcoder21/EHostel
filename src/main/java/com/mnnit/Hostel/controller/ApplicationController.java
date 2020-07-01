@@ -299,7 +299,22 @@ public class ApplicationController {
         return new RedirectView("/admin/notification");
     }
 
+    @RequestMapping("/user/request")
+    public String getRequest(Request request, Principal principal) {
+        return "request";
+    }
 
+    @PostMapping("/user/request")
+    public ModelAndView postRequest(Request request, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+        request.setRegistrationNumber(s.getRegistrationNumber());
+        request.setStatus(1);
+        requestRepository.save(request);
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("home");
+        return mv;
+    }
 
 
 
