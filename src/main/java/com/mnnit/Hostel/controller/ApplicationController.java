@@ -172,24 +172,24 @@ public class ApplicationController {
         Home for student
     */
     @RequestMapping("/user/home")
-    public ModelAndView showRoomInformation(Principal principal) {
+    public ModelAndView showRoomInformation(Student student, Principal principal) {
         ModelAndView mv = new ModelAndView("userHome");
 
         User user = userRepository.findByUsername(principal.getName());
 
-        Student student = studentRepository.findStudentByUser(user);
-        if(student == null) {
+        Student s = studentRepository.findStudentByUser(user);
+        if(s == null) {
             mv.setViewName("studentInformation");
             return mv;
         }
 
-        Hostel hostel = hostelRepository.findById(student.getHostelId());
+        Hostel hostel = hostelRepository.findById(s.getHostelId());
 
-        List<Student> list = studentRepository.findAllByHostelIdAndRoom(student.getHostelId(), student.getRoom());
-        list.remove(student);
+        List<Student> list = studentRepository.findAllByHostelIdAndRoom(s.getHostelId(), s.getRoom());
+        list.remove(s);
 
         mv.addObject("roommates", list);
-        mv.addObject("currentUser", student);
+        mv.addObject("currentUser", s);
         mv.addObject("hostel", hostel);
         return mv;
     }
@@ -339,10 +339,15 @@ public class ApplicationController {
     public RedirectView mess(@PathVariable("reg") String registrationNumber, @PathVariable int roomNo){
 
         Request request = requestRepository.getOne(registrationNumber);
+        Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
+
+        List<Student> list = studentRepository.findAllByHostelIdAndRoom(student.getHostelId(), roomNo);
+        Hostel hostel = hostelRepository.findById(student.getHostelId());
+
+        if(list.size() >= hostel.getRoomCapacity())
+            roomNo = -1;
 
         if(roomNo != -1) {
-            Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
-
             student.setRoom(roomNo);
             studentRepository.save(student);
         }
@@ -358,15 +363,14 @@ public class ApplicationController {
     }
 
     @PostMapping("/user/request")
-    public ModelAndView postRequest(Request request, Principal principal) {
+    public String postRequest(Request request, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
         Student s = studentRepository.findStudentByUser(user);
         request.setRegistrationNumber(s.getRegistrationNumber());
         request.setStatus(1);
         requestRepository.save(request);
-        ModelAndView mv = new ModelAndView();
-        mv.setViewName("home");
-        return mv;
+
+        return "redirect:/user/";
     }
 
 
