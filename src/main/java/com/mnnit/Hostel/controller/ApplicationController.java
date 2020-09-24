@@ -35,10 +35,16 @@ public class ApplicationController {
     UserRepository userRepository;
 
     @Autowired
-    RequestRepository requestRepository;
+    MessRepository messRepository;
 
     @Autowired
-    MessRepository messRepository;
+    MessRequestRepository messRequestRepository;
+
+    @Autowired
+    RoomRequestRepository roomRequestRepository;
+
+    @Autowired
+    LeaveRequestRepository leaveRequestRepository;
 
 
     @RequestMapping({"/","/user"})

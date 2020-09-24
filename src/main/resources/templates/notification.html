@@ -31,33 +31,33 @@
                 <h1 class="display-4">Notifications</h1>
             </div>
 
-
-            <div class="container"  th:each="request:${requests}">
-
-                <div th:if="${request.type == 'mess'}" class="row">
+            <div class="container"  th:each="request:${messRequests}">
+                <div class="row">
                     <div class="p-3 px-md-4 bg-white border-bottom box-shadow">
-                        <p th:text="'Student ' + ${request.registrationNumber} + ' is requested to close mess account from ' + ${#dates.format(request.dateFrom, 'dd-MM-yyyy')} + ' to ' + ${#dates.format(request.dateTo, 'dd-MM-yyyy')} + '.'"></p>
-                        <button class="btn btn-success" th:attr="onclick=|window.location.href = '/admin/notification/${request.registrationNumber}/mess'|" >Accept</button>
+                        <p th:text="'Student ' + ${request.requestId.registrationNo} + ' is requested to close mess account from ' + ${#dates.format(request.dateFrom, 'dd-MM-yyyy')} + ' to ' + ${#dates.format(request.dateTo, 'dd-MM-yyyy')} + '.'"></p>
+                        <button class="btn btn-success" th:attr="onclick=|window.location.href = '/admin/notification/${request.requestId.registrationNo}/mess'|" >Accept</button>
                     </div>
                 </div>
-
-                <div th:if="${request.type == 'leave'}" class="row">
-                    <div class="p-3 px-md-4 bg-white border-bottom box-shadow">
-                        <p th:text="'Student ' + ${request.registrationNumber} + ' is requested to leave Hostel.'"></p><br>
-                        <button class="btn btn-success" th:attr="onclick=|window.location.href = '/admin/notification/${request.registrationNumber}/leave'|" >Accept</button>
-                    </div>
-                </div>
-
-                <div th:if="${request.type == 'room'}" class="row">
-                    <div class="p-3 px-md-4 bg-white border-bottom box-shadow">
-                        <p th:text="'Student ' + ${request.registrationNumber} + ' is requested to change room to ' + ${request.toRoom} + '.'"></p><br>
-                        <button class="btn btn-success" th:attr="onclick=|window.location.href = '/admin/notification/${request.registrationNumber}/room/${request.toRoom}'|" >Accept</button>
-                        <button class="btn btn-danger" th:attr="onclick=|window.location.href = '/admin/notification/${request.registrationNumber}/room/-1'|" >Decline</button>
-                    </div>
-                </div>
-
             </div>
 
+            <div class="container"  th:each="request:${leaveRequests}">
+                <div class="row">
+                    <div class="p-3 px-md-4 bg-white border-bottom box-shadow">
+                        <p th:text="'Student ' + ${request.requestId.registrationNo} + ' is requested to leave Hostel.'"></p><br>
+                        <button class="btn btn-success" th:attr="onclick=|window.location.href = '/admin/notification/${request.requestId.registrationNo}/leave'|" >Accept</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container"  th:each="request:${roomRequests}">
+                <div class="row">
+                    <div class="p-3 px-md-4 bg-white border-bottom box-shadow">
+                        <p th:text="'Student ' + ${request.requestId.registrationNo} + ' is requested to change room to ' + ${request.toRoom} + '.'"></p><br>
+                        <button class="btn btn-success" th:attr="onclick=|window.location.href = '/admin/notification/${request.requestId.registrationNo}/room/${request.toRoom}'|" >Accept</button>
+                        <button class="btn btn-danger" th:attr="onclick=|window.location.href = '/admin/notification/${request.requestId.registrationNo}/room/-1'|" >Decline</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

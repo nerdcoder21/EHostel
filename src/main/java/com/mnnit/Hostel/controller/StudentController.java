@@ -1,9 +1,6 @@
 package com.mnnit.Hostel.controller;
 
-import com.mnnit.Hostel.model.Hostel;
-import com.mnnit.Hostel.model.Request;
-import com.mnnit.Hostel.model.Student;
-import com.mnnit.Hostel.model.User;
+import com.mnnit.Hostel.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 
@@ -89,20 +88,67 @@ public class StudentController extends ApplicationController{
     }
 
 
+    /*
+        For Handling notifications
+    */
+    @RequestMapping("/notification")
+    public ModelAndView notification(Principal principal){
+
+        ModelAndView mv = new ModelAndView();
+        mv.setViewName("studentNotification");
+
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+
+        List<LeaveRequest> leaveRequests = leaveRequestRepository.findAllByRequestId_RegistrationNoAndStatus(s.getRegistrationNumber(), 0);
+        List<MessRequest> messRequests = messRequestRepository.findAllByRequestId_RegistrationNoAndStatus(s.getRegistrationNumber(), 0);
+        List<RoomRequest> roomRequests = roomRequestRepository.findAllByRequestId_RegistrationNoAndStatus(s.getRegistrationNumber(), 0);
+
+        mv.addObject("leaveRequests", leaveRequests);
+        mv.addObject("messRequests", messRequests);
+        mv.addObject("roomRequests", roomRequests);
+        mv.addObject("student", s);
+        return mv;
+    }
 
 
     @RequestMapping("/request")
-    public String getRequest(Request request, Principal principal) {
+    public String getRequest(LeaveRequest leaveRequest, MessRequest messRequest, RoomRequest roomRequest, Principal principal) {
         return "request";
     }
 
-    @PostMapping("/request")
-    public String postRequest(Request request, Principal principal) {
+    @PostMapping("/leave/request")
+    public String postLeaveRequest(LeaveRequest leaveRequest, Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
         Student s = studentRepository.findStudentByUser(user);
-        request.setRegistrationNumber(s.getRegistrationNumber());
-        request.setStatus(1);
-        requestRepository.save(request);
+        leaveRequest.setStatus(1);
+        Date date = Calendar.getInstance().getTime();
+        leaveRequest.setRequestId(new RequestId(s.getRegistrationNumber(),date));
+        leaveRequestRepository.save(leaveRequest);
+        return "redirect:/user/";
+    }
+
+    @PostMapping("/room/request")
+    public String postRoomRequest(RoomRequest roomRequest, Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+        Date date = Calendar.getInstance().getTime();
+        roomRequest.setRequestId(new RequestId(s.getRegistrationNumber(),date));
+        roomRequest.setStatus(1);
+        roomRequestRepository.save(roomRequest);
+
+        return "redirect:/user/";
+    }
+
+    @PostMapping("/mess/request")
+    public String postMessRequest(MessRequest messRequest, Principal principal) {
+        Date date = Calendar.getInstance().getTime();
+        User user = userRepository.findByUsername(principal.getName());
+        Student s = studentRepository.findStudentByUser(user);
+        messRequest.setStatus(1);
+        messRequest.setRequestId(new RequestId(s.getRegistrationNumber(), date));
+
+        messRequestRepository.save(messRequest);
 
         return "redirect:/user/";
     }

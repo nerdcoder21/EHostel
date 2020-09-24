@@ -1,9 +1,6 @@
 package com.mnnit.Hostel.controller;
 
-import com.mnnit.Hostel.model.Hostel;
-import com.mnnit.Hostel.model.Mess;
-import com.mnnit.Hostel.model.Request;
-import com.mnnit.Hostel.model.Student;
+import com.mnnit.Hostel.model.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -99,10 +96,13 @@ public class AdminController extends ApplicationController {
         ModelAndView mv = new ModelAndView();
         mv.setViewName("notification");
 
-        List<Request> requests = requestRepository.findAllByStatus(1);
+        List<LeaveRequest> leaveRequests = leaveRequestRepository.findAllByStatus(1);
+        List<MessRequest> messRequests = messRequestRepository.findAllByStatus(1);
+        List<RoomRequest> roomRequests = roomRequestRepository.findAllByStatus(1);
 
-        mv.addObject("requests", requests);
-
+        mv.addObject("leaveRequests", leaveRequests);
+        mv.addObject("messRequests", messRequests);
+        mv.addObject("roomRequests", roomRequests);
         return mv;
     }
 
@@ -113,58 +113,61 @@ public class AdminController extends ApplicationController {
     @RequestMapping("/notification/{reg}/mess")
     public RedirectView messRequest(@PathVariable("reg") String registrationNumber){
 
-        Request request = requestRepository.getOne(registrationNumber);
+        List<MessRequest> messRequests = messRequestRepository.findAllByRequestId_RegistrationNoAndStatus(registrationNumber, 1);
 
-        int days = (int)((request.getDateTo().getTime() - request.getDateFrom().getTime())/(1000*3600*24));
-        Mess messAccount;
-        try{
-            messAccount = messRepository.findByRegistrationNumber(registrationNumber);
-            messAccount.setHoliday(messAccount.getHoliday() + days);
-        }catch (Exception e){
-            messAccount = new Mess(registrationNumber, days, 0, 1);
+        for(MessRequest request : messRequests) {
+            int days = (int) ((request.getDateTo().getTime() - request.getDateFrom().getTime()) / (1000 * 3600 * 24));
+            Mess messAccount;
+            try {
+                messAccount = messRepository.findByRegistrationNumber(registrationNumber);
+                messAccount.setHoliday(messAccount.getHoliday() + days);
+            } catch (Exception e) {
+                messAccount = new Mess(registrationNumber, days, 0, 1);
+            }
+            messRepository.save(messAccount);
+
+            request.setStatus(0);
+            messRequestRepository.save(request);
         }
-        messRepository.save(messAccount);
-
-        request.setStatus(0);
-        requestRepository.save(request);
         return new RedirectView("/admin/notification");
     }
 
     @RequestMapping("/notification/{reg}/leave")
     public RedirectView hostelLeaveRequest(@PathVariable("reg") String registrationNumber){
 
-        Request request = requestRepository.getOne(registrationNumber);
+        List<LeaveRequest> leaveRequests = leaveRequestRepository.findAllByRequestId_RegistrationNoAndStatus(registrationNumber, 1);
         Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
 
-        student.setHostelId(0);
-        student.setRoom(0);
-        studentRepository.save(student);
-
-        request.setStatus(0);
-        requestRepository.save(request);
-
+        for(LeaveRequest leaveRequest : leaveRequests) {
+            student.setHostelId(0);
+            student.setRoom(0);
+            studentRepository.save(student);
+            leaveRequest.setStatus(0);
+            leaveRequestRepository.save(leaveRequest);
+        }
         return new RedirectView("/admin/notification");
     }
 
     @RequestMapping("/notification/{reg}/room/{roomNo}")
     public RedirectView roomChangeRequest(@PathVariable("reg") String registrationNumber, @PathVariable int roomNo){
 
-        Request request = requestRepository.getOne(registrationNumber);
+        List<RoomRequest> roomRequests = roomRequestRepository.findAllByRequestId_RegistrationNoAndStatus(registrationNumber, 1);
         Student student = studentRepository.findStudentByRegistrationNumber(registrationNumber);
 
-        List<Student> list = studentRepository.findAllByHostelIdAndRoom(student.getHostelId(), roomNo);
-        Hostel hostel = hostelRepository.findById(student.getHostelId());
+        for(RoomRequest roomRequest : roomRequests) {
+            List<Student> list = studentRepository.findAllByHostelIdAndRoom(student.getHostelId(), roomNo);
+            Hostel hostel = hostelRepository.findById(student.getHostelId());
 
-        if(list.size() >= hostel.getRoomCapacity())
-            roomNo = -1;
+            if (list.size() >= hostel.getRoomCapacity())
+                roomNo = -1;
 
-        if(roomNo != -1) {
-            student.setRoom(roomNo);
-            studentRepository.save(student);
+            if (roomNo != -1) {
+                student.setRoom(roomNo);
+                studentRepository.save(student);
+            }
+            roomRequest.setStatus(0);
+            roomRequestRepository.save(roomRequest);
         }
-        request.setStatus(0);
-        requestRepository.save(request);
-
         return new RedirectView("/admin/notification");
     }
 }

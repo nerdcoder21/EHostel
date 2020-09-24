@@ -20,10 +20,10 @@
                 <div class="col-sm-3"></div>
                     <div class="col-sm-8">
 
-                        <form action="#" method="post" th:action="@{/user/request}" th:object="${request}">
+                        <form action="#" method="post" th:action="@{/user/mess/request}" th:object="${messRequest}">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" id="request1" value="mess" th:field="*{type}" onclick="showHide()">
-                                <label class="form-check-label" for="request1">Mess account closing request</label>
+                                <input class="form-check-input" type="radio" id="request1" onclick="showMess()">
+                                <label class="form-check-label" for="request1">Mess account closing leaveRequest</label>
                                 <div class="hidden1">
                                 <div class="row">
                                         <div class="col-sm-2">
@@ -33,9 +33,7 @@
                                             <input type="date" class="form-control" id="fromDateInput" th:field="*{dateFrom}">
                                         </div>
                                     </div>
-
                                     <br>
-
                                     <div class="row">
                                         <div class="col-sm-2">
                                             <label for="toDateInput">To:</label>
@@ -45,17 +43,18 @@
 
                                         </div>
                                     </div>
-
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
-                                <br>
                             </div>
+                        </form>
+
+                        <form action="#" method="post" th:action="@{/user/room/request}" th:object="${roomRequest}">
                             <div class="form-check">
                                 <br>
-                                <input class="form-check-input" type="radio" id="request2" value="room" th:field="*{type}" onclick="showHide()">
-                                <label class="form-check-label" for="request2">Room change request</label>
-
+                                <input class="form-check-input" type="radio" id="request2" onclick="showRoom()">
+                                <label class="form-check-label" for="request2">Room change leaveRequest</label>
                                 <br>
-
                                 <div class="hidden2">
                                 <div class="row">
                                         <div class="col-sm-3">
@@ -65,17 +64,22 @@
                                             <input type="number" class="form-control" th:field="*{toRoom}" id="roomChangeInput">
                                         </div>
                                     </div>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
                                 </div>
                             </div>
+                        </form>
+
+                        <form action="#" method="post" th:action="@{/user/leave/request}" th:object="${leaveRequest}">
 
                             <div class="form-check">
-                                <br>
-                                <input class="form-check-input" type="radio" th:field="*{type}" id="request3" value="leave" onclick="showHide()">
+                                <input class="form-check-input" type="radio" id="request3" onclick="showLeave()">
                                 <label class="form-check-label" for="request3">Hostel Leaving</label>
-
+                                <div class="hidden3">
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
                             </div>
-                            <br>
-                            <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                 </div>
             </div>
@@ -94,9 +98,19 @@
                 for (var i = 0; i != element2.length; i++) {
                     element2[i].style.display = "none";
                 }
+
+                var element3 = document.getElementsByClassName("hidden3");
+
+                for (var i = 0; i != element3.length; i++) {
+                    element3[i].style.display = "none";
+                }
             }
-            function showHide() {
+
+            function showMess(){
                 if (document.getElementById('request1').checked) {
+                    document.getElementById('request2').checked = false;
+                    document.getElementById('request3').checked = false;
+
                     var element1 = document.getElementsByClassName("hidden1");
 
                     for (var i = 0; i != element1.length; i++) {
@@ -107,7 +121,21 @@
                     for (var i = 0; i != element2.length; i++) {
                         element2[i].style.display = "none";
                     }
-                } else if (document.getElementById('request2').checked) {
+
+                    var element3 = document.getElementsByClassName("hidden3");
+
+                    for (var i = 0; i != element3.length; i++) {
+                        element3[i].style.display = "none";
+                    }
+                }
+            }
+
+            function showRoom(){
+                if (document.getElementById('request2').checked) {
+                    document.getElementById('request1').checked = false;
+                    document.getElementById('request3').checked = false;
+
+
                     var element2 = document.getElementsByClassName("hidden2");
 
                     for (var i = 0; i != element2.length; i++) {
@@ -119,7 +147,28 @@
                     for (var i = 0; i != element1.length; i++) {
                         element1[i].style.display = "none";
                     }
-                } else if (document.getElementById('request3').checked){
+
+                    var element3 = document.getElementsByClassName("hidden3");
+
+                    for (var i = 0; i != element3.length; i++) {
+                        element3[i].style.display = "none";
+                    }
+
+                }
+            }
+
+            function showLeave(){
+                if (document.getElementById('request3').checked){
+
+                    document.getElementById('request2').checked = false;
+                    document.getElementById('request1').checked = false;
+
+                    var element3 = document.getElementsByClassName("hidden3");
+
+                    for (var i = 0; i != element3.length; i++) {
+                        element3[i].style.display = "block";
+                    }
+
                     var element1 = document.getElementsByClassName("hidden1");
 
                     for (var i = 0; i != element1.length; i++) {
